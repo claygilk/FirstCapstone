@@ -22,8 +22,12 @@ namespace Capstone
             //Do not change this code
             UserInterface userInterface = new UserInterface();
 
-            userInterface.DisplayCateringItems(testInventory);
+            Account testAccount = new Account();
+            testAccount.Deposit(20);
+            testAccount.Deposit(20.5M);
 
+            userInterface.DisplayCateringItems(testInventory);
+            userInterface.SelectProducts(testInventory);
             userInterface.RunInterface();
 
         }

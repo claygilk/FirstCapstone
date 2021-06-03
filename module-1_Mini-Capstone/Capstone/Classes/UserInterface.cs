@@ -29,10 +29,53 @@ namespace Capstone.Classes
 
         public void DisplayCateringItems(Catering currentInventory)
         {
-            foreach(CateringItem item in currentInventory.Items)
+            foreach (CateringItem item in currentInventory.Items)
             {
                 Console.Write($"{item.ItemInfo[0]}   {item.ItemInfo[1]}   ${item.ItemInfo[2]}   {item.ItemInfo[3]}\n");
             }
+        }
+
+        public void OrderMenu(Catering catering)
+        {
+
+        }
+
+        public void AddMoney()
+        {
+
+        }
+
+        public void SelectProducts(Catering inventory)
+        {
+            bool done = false;
+
+            while (!done)
+            {
+                    Console.WriteLine("Enter product code: ");
+                    string productChoice = Console.ReadLine();
+
+                    CateringItem currentItem = inventory.LookUpByCode(productChoice);
+                    if (currentItem == null)
+                    {
+                        Console.WriteLine("Item not found");
+                        break;
+                    }
+
+                    Console.WriteLine("How many items do you want to buy? ");
+                    int itemsToBuy = Convert.ToInt32(Console.ReadLine());
+
+                    if (itemsToBuy > currentItem.InStock)
+                    {
+                        Console.WriteLine("Out of Stock");
+                        break;
+                    }
+                    else
+                    {
+                        currentItem.SellItem(itemsToBuy);
+                        break;
+                    }
+            }
+            return;
         }
     }
 }

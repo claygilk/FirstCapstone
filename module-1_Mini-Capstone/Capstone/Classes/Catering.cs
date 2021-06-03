@@ -25,6 +25,17 @@ namespace Capstone.Classes
                 this.items = value;
             }
         }
+        public CateringItem LookUpByCode(string codeToCheck)
+        {
+            foreach (CateringItem item in this.Items)
+            {
+                if (item.Code == codeToCheck)
+                {
+                    return item;
+                }
+            }
+            return null;
+        }
    
     }
 }

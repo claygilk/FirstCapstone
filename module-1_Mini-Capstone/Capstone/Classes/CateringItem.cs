@@ -13,5 +13,28 @@ namespace Capstone.Classes
     public class CateringItem
     {
         public string[] ItemInfo { get; set; }
+        public string Code { get { return ItemInfo[0]; } }
+        public string Name { get { return ItemInfo[1]; } }
+        public decimal Price { get { return Convert.ToDecimal(ItemInfo[2]); } }
+        public string Type { get { return ItemInfo[3]; } }
+        public int InStock { get; set; }
+
+        public CateringItem()
+        {
+            this.InStock = 50;
+        }
+        
+        public bool SellItem(int itemsToSell)
+        {
+            if (itemsToSell > this.InStock)
+            {
+                return false;
+            }
+            else
+            {
+                InStock -= itemsToSell;
+                return true;
+            }
+        }
     }
 }
