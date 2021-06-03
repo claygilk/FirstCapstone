@@ -15,18 +15,35 @@ namespace Capstone.Classes
     {
         private Catering catering = new Catering();
 
+        // TODO: Create public property for catering class
+
         public void RunInterface()
         {
+            // TODO: At the start of the program this method should create a FileAccess Object
+            //       and call the LoadInventory() method.
+            //       the Catering object returned by this method should then be assigned to "catering" field/property
+            //       Also, we should probably rename this property bc its confusing.
+
             bool done = false;
 
             while (!done)
             {
-                Console.WriteLine("Put details of your user interface here");
+                // This method should write the following options to the console:
 
-                Console.ReadLine();
+                // 1. Display Catering Items
+                // Calls the DisplayCateringItems() Method
+
+
+                // 2. Order
+                // Calls the OrderMenu() method
+
+                // 3. Quier
+                // Exits Program
+
             }
         }
 
+        // Should also display number of items in stock
         public void DisplayCateringItems(Catering currentInventory)
         {
             foreach (CateringItem item in currentInventory.Items)
