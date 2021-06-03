@@ -12,6 +12,6 @@ namespace Capstone.Classes
     /// </remarks>
     public class CateringItem
     {
-
+        public string[] ItemInfo { get; set; }
     }
 }

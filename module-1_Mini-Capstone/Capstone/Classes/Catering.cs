@@ -13,8 +13,18 @@ namespace Capstone.Classes
     public class Catering
     {
         private List<CateringItem> items = new List<CateringItem>();
-        
 
+        public List<CateringItem> Items
+        {
+            get
+            {
+                return this.items;
+            }
+            set
+            {
+                this.items = value;
+            }
+        }
    
     }
 }

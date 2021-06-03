@@ -26,5 +26,13 @@ namespace Capstone.Classes
                 Console.ReadLine();
             }
         }
+
+        public void DisplayCateringItems(Catering currentInventory)
+        {
+            foreach(CateringItem item in currentInventory.Items)
+            {
+                Console.Write($"{item.ItemInfo[0]}   {item.ItemInfo[1]}   ${item.ItemInfo[2]}   {item.ItemInfo[3]}\n");
+            }
+        }
     }
 }
