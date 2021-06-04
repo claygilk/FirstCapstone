@@ -8,15 +8,16 @@ namespace Capstone.Classes
     /// <summary>
     /// This class handles recording transactions to a log file ("Log.txt")
     /// </summary>
-    class Logger
+    public class Logger
     {
         /// <summary>
         /// This method logs all deposits to the customer's account
         /// </summary>
         /// <param name="deposit">The amount deposited</param>
         /// <param name="balance">the new balance</param>
-        public void LogDeposit(decimal deposit, decimal balance)
+        public string LogDeposit(decimal deposit, decimal balance)
         {
+            string record = $"{DateTime.Now} ADD MONEY: ${deposit} ${balance}";
             // try-catch block is used to hand file exceptions
             try
             {
@@ -24,7 +25,7 @@ namespace Capstone.Classes
                 using (StreamWriter write = new StreamWriter(@"C:\Catering\Log.txt", true))
                 {
                     // Writes: Date, Time, action taken, deposit amout, new balance
-                    write.WriteLine($"{DateTime.Now} ADD MONEY: ${deposit} ${balance}");
+                    write.WriteLine(record);
                 }
             }
             catch (DirectoryNotFoundException e)
@@ -39,6 +40,7 @@ namespace Capstone.Classes
             {
                 Console.WriteLine(@"Encountered an error: " + e.Message);
             }
+            return record;
         }
 
         /// <summary>
@@ -47,8 +49,9 @@ namespace Capstone.Classes
         /// <param name="itemSold"></param>
         /// <param name="quantitySold"></param>
         /// <param name="newBalance"></param>
-        public void LogSale(CateringItem itemSold, int quantitySold, decimal newBalance)
+        public string LogSale(CateringItem itemSold, int quantitySold, decimal newBalance)
         {
+            string record = $"{DateTime.Now} {quantitySold} {itemSold.Name} {itemSold.Code} ${itemSold.Price} ${newBalance}";
             // try-catch block is used to hand file exceptions
             try
             {
@@ -56,7 +59,7 @@ namespace Capstone.Classes
                 using (StreamWriter write = new StreamWriter(@"C:\Catering\Log.txt", true))
                 {
                     // Writes: Date, Time, quantity sold, item name, item code, item price and new balance
-                    write.WriteLine($"{DateTime.Now} {quantitySold} {itemSold.Name} {itemSold.Code} ${itemSold.Price} ${newBalance}");
+                    write.WriteLine(record);
                 }
             }
             catch (DirectoryNotFoundException e)
@@ -71,6 +74,7 @@ namespace Capstone.Classes
             {
                 Console.WriteLine(@"Encountered an error: " + e.Message);
             }
+            return record;
         }
 
         /// <summary>
@@ -78,8 +82,9 @@ namespace Capstone.Classes
         /// </summary>
         /// <param name="changeDue"></param>
         /// <param name="balance"></param>
-        public void LogTransaction(decimal changeDue, decimal balance)
+        public string LogTransaction(decimal changeDue, decimal balance)
         {
+            string record = $"{DateTime.Now} GIVE CHANGE: ${changeDue} ${balance}";
             // try-catch block is used to hand file exceptions
             try
             {
@@ -87,7 +92,7 @@ namespace Capstone.Classes
                 using (StreamWriter write = new StreamWriter(@"C:\Catering\Log.txt", true))
                 {
                     // Writes: Date, Time, action taken, change due, new balance
-                    write.WriteLine($"{DateTime.Now} GIVE CHANGE: ${changeDue} ${balance}");
+                    write.WriteLine(record);
                 }
             }
             catch (DirectoryNotFoundException e)
@@ -102,6 +107,7 @@ namespace Capstone.Classes
             {
                 Console.WriteLine(@"Encountered an error: " + e.Message);
             }
+            return record;
         }
     }
 }
