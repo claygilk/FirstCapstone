@@ -36,11 +36,11 @@ namespace CapstoneTests
         {
             //Arrange
             Account account = new Account();
-            //decimal testCompleteTransaction = 5;
+            account.Deposit(100M);
             //Act
-            //decimal result = account.CompleteTransaction(testCompleteTransaction);
+            account.CompleteTransaction();
             //Assert
-            //Assert.AreEqual(0, result);
+            Assert.AreEqual(0, account.Balance);
         }
         [TestMethod]
         public void GetChangeBack_50CentsReturnsTwoQuarters()

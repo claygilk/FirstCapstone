@@ -88,7 +88,7 @@ namespace Capstone.Classes
             
         }
         /// <summary>
-        /// This method resets the customer's account balance to zero. A logs the end of the transaction.
+        /// This method resets the customer's account balance to zero. And logs the end of the transaction.
         /// </summary>
         public void CompleteTransaction()
         {
