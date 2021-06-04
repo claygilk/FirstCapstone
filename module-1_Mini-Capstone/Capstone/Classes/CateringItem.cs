@@ -18,6 +18,7 @@ namespace Capstone.Classes
         public decimal Price { get { return Convert.ToDecimal(ItemInfo[2]); } }
         public string Type { get { return ItemInfo[3]; } }
         public int InStock { get; set; }
+        public int InCart { get; set; }
 
         public CateringItem()
         {
@@ -32,7 +33,9 @@ namespace Capstone.Classes
             }
             else
             {
+
                 InStock -= itemsToSell;
+                InCart += itemsToSell;
                 return true;
             }
         }

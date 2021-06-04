@@ -15,19 +15,13 @@ namespace Capstone
         {
             // TEST CODE
             // DELETE LATER
-            FileAccess test = new FileAccess();
-            Catering testInventory = test.LoadInventory();
+           
 
             //This is the only code that goes here
             //Do not change this code
             UserInterface userInterface = new UserInterface();
 
-            Account testAccount = new Account();
-            testAccount.Deposit(20);
-            testAccount.Deposit(20.5M);
 
-            userInterface.DisplayCateringItems(testInventory);
-            userInterface.SelectProducts(testInventory);
             userInterface.RunInterface();
 
         }

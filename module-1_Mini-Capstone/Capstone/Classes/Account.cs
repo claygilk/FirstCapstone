@@ -6,7 +6,20 @@ namespace Capstone.Classes
 {
     public class Account
     {
-        public decimal Balance { get; private set; }
+        public decimal Balance { get; set; }
+        public List<CateringItem> Cart { get; set; } = new List<CateringItem>();
+        public decimal totalBill 
+        { 
+            get
+            {
+                decimal runningTotal = 0;
+                foreach (CateringItem item in this.Cart)
+                {
+                    runningTotal += item.Price * item.InCart;
+                }
+                return runningTotal;
+            } 
+        }
 
         public decimal Withdraw(decimal amountToWithdraw)
         {
@@ -44,6 +57,7 @@ namespace Capstone.Classes
                 }
                 return this.Balance;
             }
+
         }
     }
 }

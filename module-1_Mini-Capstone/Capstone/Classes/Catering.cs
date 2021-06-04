@@ -10,10 +10,16 @@ namespace Capstone.Classes
     /// <remarks>
     /// NO Console statements are allowed in this class
     /// </remarks>
-    public class Catering
+    public class Catering 
     {
+        public Account Customer { get; set; }
+
         private List<CateringItem> items = new List<CateringItem>();
 
+        public Catering()
+        {
+            this.Customer = new Account();
+        }
         public List<CateringItem> Items
         {
             get
