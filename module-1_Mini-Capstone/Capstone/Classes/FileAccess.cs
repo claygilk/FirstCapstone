@@ -17,6 +17,9 @@ namespace Capstone.Classes
         // You will likely need to create this directory and copy / paste any needed files.
         private string filePath = @"C:\Catering\cateringsystem.csv";
 
+        /// <summary>
+        /// Public property that returns the private field, filePath. A hardcoded file path to the data input file.
+        /// </summary>
         public string FilePath
         {
             get { return this.filePath; }
@@ -101,13 +104,17 @@ namespace Capstone.Classes
         /// <returns>Returns a Catering object whose Items property corresponds to the items in the input file.</returns>
         public Catering LoadCateringItemsIntoCatering(CateringItem[] cateringItemArray)
         {
+            // Creates a new Catering object
             Catering inventory = new Catering();
 
+            // Loops over each element in the catering item Array and...
             for (int i = 0; i < cateringItemArray.Length; i++)
             {
+                // ...adds that object to the list of available items for this order
                 inventory.AvailableItems.Add(cateringItemArray[i]);
             }
 
+            // The now "fully stocked" Catering object is returned
             return inventory;
         }
 

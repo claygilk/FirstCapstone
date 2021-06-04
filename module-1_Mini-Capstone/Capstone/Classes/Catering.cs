@@ -12,9 +12,14 @@ namespace Capstone.Classes
     /// </remarks>
     public class Catering 
     {
-
+        /// <summary>
+        /// The private field that is the list of all available CateringItems. These are items that are "in stock".
+        /// </summary>
         private List<CateringItem> availableItems = new List<CateringItem>();
 
+        /// <summary>
+        /// The public property that returns the list of all available CateringItems. These are items that are "in stock".
+        /// </summary>
         public List<CateringItem> AvailableItems
         {
             get
@@ -26,6 +31,7 @@ namespace Capstone.Classes
                 this.availableItems = value;
             }
         }
+
         /// <summary>
         /// This method is used to find a CateringItem in invetory given an item code.
         /// </summary>
@@ -43,6 +49,7 @@ namespace Capstone.Classes
                     return item;
                 }
             }
+            // If th item is not found, the method returns "null"
             return null;
         }
    

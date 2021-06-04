@@ -5,14 +5,25 @@ using System.IO;
 
 namespace Capstone.Classes
 {
+    /// <summary>
+    /// This class handles recording transactions to a log file ("Log.txt")
+    /// </summary>
     class Logger
     {
+        /// <summary>
+        /// This method logs all deposits to the customer's account
+        /// </summary>
+        /// <param name="deposit">The amount deposited</param>
+        /// <param name="balance">the new balance</param>
         public void LogDeposit(decimal deposit, decimal balance)
         {
+            // try-catch block is used to hand file exceptions
             try
             {
+                // Use a stream writer to append the record to C:\Catering\Log.txt 
                 using (StreamWriter write = new StreamWriter(@"C:\Catering\Log.txt", true))
                 {
+                    // Writes: Date, Time, action taken, deposit amout, new balance
                     write.WriteLine($"{DateTime.Now} ADD MONEY: ${deposit} ${balance}");
                 }
             }
@@ -30,12 +41,21 @@ namespace Capstone.Classes
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="itemSold"></param>
+        /// <param name="quantitySold"></param>
+        /// <param name="newBalance"></param>
         public void LogSale(CateringItem itemSold, int quantitySold, decimal newBalance)
         {
+            // try-catch block is used to hand file exceptions
             try
             {
+                // Use a stream writer to append the record to C:\Catering\Log.txt 
                 using (StreamWriter write = new StreamWriter(@"C:\Catering\Log.txt", true))
                 {
+                    // Writes: Date, Time, quantity sold, item name, item code, item price and new balance
                     write.WriteLine($"{DateTime.Now} {quantitySold} {itemSold.Name} {itemSold.Code} ${itemSold.Price} ${newBalance}");
                 }
             }
@@ -53,12 +73,20 @@ namespace Capstone.Classes
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="changeDue"></param>
+        /// <param name="balance"></param>
         public void LogTransaction(decimal changeDue, decimal balance)
         {
+            // try-catch block is used to hand file exceptions
             try
             {
+                // Use a stream writer to append the record to C:\Catering\Log.txt 
                 using (StreamWriter write = new StreamWriter(@"C:\Catering\Log.txt", true))
                 {
+                    // Writes: Date, Time, action taken, change due, new balance
                     write.WriteLine($"{DateTime.Now} GIVE CHANGE: ${changeDue} ${balance}");
                 }
             }
