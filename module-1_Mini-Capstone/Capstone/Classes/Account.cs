@@ -4,38 +4,66 @@ using System.Text;
 
 namespace Capstone.Classes
 {
+    /// <summary>
+    /// This class handles the current balance and order information for each customer
+    /// </summary>
     public class Account
     {
+        /// <summary>
+        /// the Catering object for this customer's current order
+        /// </summary>
         public Catering Order { get; set; }
+        
+        /// <summary>
+        /// The customer's current account balance.
+        /// </summary>
         public decimal Balance { get; set; }
+
+        /// <summary>
+        /// The customer's current 'shopping cart' (aka the list of items they have already purchased).
+        /// </summary>
         public List<CateringItem> Cart { get; set; } = new List<CateringItem>();
+
+        /// <summary>
+        /// Derived Propety. The total cost of all the items in the customer's shopping cart. 
+        /// </summary>
         public decimal totalBill 
         { 
             get
             {
+                // totalBill is derived by looping over all the items in the cart and...
                 decimal runningTotal = 0;
                 foreach (CateringItem item in this.Cart)
                 {
+                    // ...adding the combined cost for all the items of that type to the running total
                     runningTotal += item.Price * item.InCart;
                 }
+                // Once the price of all the items have been summed together the total is returned
                 return runningTotal;
             } 
         }
 
+        /// <summary>
+        /// This method attempts to withdraw money from the customer's account.
+        /// </summary>
+        /// <param name="amountToWithdraw">The amount the user is attempting to withdraw. Must be less than or equal to account balance and not a negative number.</param>
+        /// <returns></returns>
         public decimal Withdraw(decimal amountToWithdraw)
         {
-            //Making sure we can't input a negative number
+            // If the user attempts to withdraw a negative amount the withdraw fails, and the balance remains the same
             if (amountToWithdraw < 0)
             {
                 return this.Balance;
             }
-            else if (Balance >= amountToWithdraw)
-            {
-                this.Balance -= amountToWithdraw;
-            }
-            else
+            // If the user attempts to withdraw more money than their is in the account, the withdraw fails and the balance remains the same
+            else if (amountToWithdraw > this.Balance)
             {
                 return this.Balance;
+            }
+            // If the user attempts to withdraw a valid amount of money, the withdraw succeds and the balance is updated
+            else
+            {
+                this.Balance -= amountToWithdraw;
             }
             return this.Balance;
         }
@@ -104,13 +132,18 @@ namespace Capstone.Classes
         }
 
         /// <summary>
-        /// 
+        /// This method calcualtes the denominations of change that is due back to the customer at the end of a transaction.
         /// </summary>
-        /// <param name="changeDue"></param>
-        /// <returns></returns>
+        /// <returns>Returns a string that lists out how much of each denomination the customer is due</returns>
         public string GetChangeBack()
         {
+            // Create a decimal variable 'changeDue' that is equal to the remaining balance in the account
             decimal changeDue = this.Balance;
+            
+            // Convert the change due to a decimal and change the unit from dollars to cents
+            int currentChange = Convert.ToInt32(changeDue * 100);
+
+            // Create a variable for each denomination of change 
             int nickels = 0;
             int dimes = 0;
             int quarters = 0;
@@ -119,7 +152,12 @@ namespace Capstone.Classes
             int tens = 0;
             int twenties = 0;
 
-            int currentChange = Convert.ToInt32(changeDue * 100);
+            // This chain of while loops repeats the same process for each denomination of change
+            // First it checks if the current change is more than the value of the current denomination
+            // if it is, then the current change is decreased by the value of that denomination
+            // At the same time the counter for that denomination is increased by one
+            // this process is repeated until the value of the current still due is less than the value of the denomination
+            // This process is then repeated for each denomination until the current change due is equal to zero
             while (currentChange >= 2000)
             {
                 twenties++;

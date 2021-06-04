@@ -13,32 +13,50 @@ namespace Capstone.Classes
     /// </remarks>
     public class UserInterface
     {
+        /// <summary>
+        /// private property that creates a new Account object that is later initalized by the FileAcces class
+        /// </summary>
         private Account customer = new Account();
+
+        /// <summary>
+        /// public property that refers to the private customer field. Represents one customers account.
+        /// </summary>
         public Account Customer { get { return this.customer; } set { customer = value; } }
 
-        // TODO: Create public property for catering class
-
+        /// <summary>
+        /// The main interface method that is called in Program.cs
+        /// </summary>
         public void RunInterface()
         {
+            // Create a new instance of file access
             FileAccess file = new FileAccess();
+
+            // Call the LoadInventory method to initialize the Catering object with values based on the input file
             this.Customer.Order = file.LoadInventory();
 
-
+            // This interface is run until the user decides to quit
             bool done = false;
 
             while (!done)
             {
-                // This method should write the following options to the console:
+                // Displays the three main menu options to the user
                 Console.WriteLine("\n1. Display Catering Items\n2. Order\n3. Quit\n");
+
+                // reads their choice and stores it to a variable to use in a switch block
                 string choice = Console.ReadLine();
+
+                // switch statement is used to run the appropriate submenue based on the user's input
                 switch (choice)
                 {
+                    // Displays all items in stock
                     case "1":
                         this.DisplayCateringItems(this.Customer);
                         break;
+                    // Displays the Order Menu
                     case "2":
                         this.OrderMenu(this.Customer);
                         break;
+                    // Quits the program
                     case "3":
                         done = true;
                         break;
@@ -65,23 +83,36 @@ namespace Capstone.Classes
             }
         }
 
+        /// <summary>
+        /// This method displays and handles user input for the Order Menu.
+        /// </summary>
+        /// <param name="customer">The current customer's account object</param>
         public void OrderMenu(Account customer)
         {
+            // the user will be returned to this menu until they complete the transaction
             bool done = false;
             while (!done)
             {
+                // Display the three options to the user
                 Console.WriteLine("\n1. Add Money\n2. Select Products\n3. Complete Transaction\n");
+
+                // Display the customer's current balance to the user
                 Console.WriteLine("Current Account Balance: $" + customer.Balance);
 
+                // store the user's input in a variable to use in a switch block
                 string choice = Console.ReadLine();
+
                 switch (choice)
                 {
+                    // Displays the Add Money Menu
                     case "1":
                         this.AddMoneyMenu(customer);
                         break;
+                    // Displays the Select Products Menu
                     case "2":
                         this.SelectProductsMenu(customer);
                         break;
+                    // Displays the Completed Transaction Screen
                     case "3":
                         this.CompleteTransactionScreen(customer);
                         return;
@@ -127,10 +158,10 @@ namespace Capstone.Classes
             Console.WriteLine("Enter amount to deposit: ");
             try
             {
-            // Converts input into a decimal
-            decimal depositAmount = Convert.ToDecimal(Console.ReadLine());
-            // Attempts to update customer balance by passing the deposit amount to the Account.Deposit() method
-            customer.Balance = customer.Deposit(depositAmount);
+                // Converts input into a decimal
+                decimal depositAmount = Convert.ToDecimal(Console.ReadLine());
+                // Attempts to update customer balance by passing the deposit amount to the Account.Deposit() method
+                customer.Balance = customer.Deposit(depositAmount);
             }
             catch (FormatException)
             {
