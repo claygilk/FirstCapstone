@@ -16,9 +16,17 @@ namespace Capstone.Classes
                     write.WriteLine($"{DateTime.Now} ADD MONEY: ${deposit} ${balance}");
                 }
             }
-            catch (IOException)
+            catch (DirectoryNotFoundException e)
             {
-                Console.WriteLine("ERROR");
+                Console.WriteLine(@"Could not find the directory: C:\Catering\");
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                Console.WriteLine(@"Do not have permission to write to: C:\Catering\Log.txt" + "\nPlease update file permissions");
+            }
+            catch (IOException e)
+            {
+                Console.WriteLine(@"Encountered an error: " + e.Message);
             }
         }
 
@@ -28,12 +36,20 @@ namespace Capstone.Classes
             {
                 using (StreamWriter write = new StreamWriter(@"C:\Catering\Log.txt", true))
                 {
-                    write.WriteLine($"{DateTime.Now} {quantitySold} {itemSold.Name} ${itemSold.Price} ${newBalance}");
+                    write.WriteLine($"{DateTime.Now} {quantitySold} {itemSold.Name} {itemSold.Code} ${itemSold.Price} ${newBalance}");
                 }
             }
-            catch (IOException)
+            catch (DirectoryNotFoundException e)
             {
-                Console.WriteLine("ERROR");
+                Console.WriteLine(@"Could not find the directory: C:\Catering\");
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                Console.WriteLine(@"Do not have permission to write to: C:\Catering\Log.txt" + "\nPlease update file permissions");
+            }
+            catch (IOException e)
+            {
+                Console.WriteLine(@"Encountered an error: " + e.Message);
             }
         }
 
@@ -46,9 +62,17 @@ namespace Capstone.Classes
                     write.WriteLine($"{DateTime.Now} GIVE CHANGE: ${changeDue} ${balance}");
                 }
             }
-            catch (IOException)
+            catch (DirectoryNotFoundException e)
             {
-                Console.WriteLine("ERROR");
+                Console.WriteLine(@"Could not find the directory: C:\Catering\");
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                Console.WriteLine(@"Do not have permission to write to: C:\Catering\Log.txt" + "\nPlease update file permissions");
+            }
+            catch (IOException e)
+            {
+                Console.WriteLine(@"Encountered an error: " + e.Message);
             }
         }
     }

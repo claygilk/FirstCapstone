@@ -49,10 +49,23 @@ namespace Capstone.Classes
 
                 }
             }
+            catch (DirectoryNotFoundException e)
+            {
+                Console.WriteLine(@"Could not find the directory: C:\Catering\");
+            }
+            catch (FileNotFoundException e)
+            {
+                Console.WriteLine(@"Could not find the file: C:\Catering\cateringsystem.csv");
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                Console.WriteLine(@"Do not have permission to access: C:\Catering\cateringsystem.csv" + "\nPlease update file permissions");
+            }
             catch (IOException e)
             {
-                Console.WriteLine(e.Message);
+                Console.WriteLine(@"Encountered an error: " + e.Message);
             }
+
             // Once all lines have been read, and all string arrays have been added, returns the list of items
             return itemList;
         }
@@ -92,7 +105,7 @@ namespace Capstone.Classes
 
             for (int i = 0; i < cateringItemArray.Length; i++)
             {
-                inventory.Items.Add(cateringItemArray[i]);
+                inventory.AvailableItems.Add(cateringItemArray[i]);
             }
 
             return inventory;

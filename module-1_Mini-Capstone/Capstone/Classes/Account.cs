@@ -6,6 +6,7 @@ namespace Capstone.Classes
 {
     public class Account
     {
+        public Catering Order { get; set; }
         public decimal Balance { get; set; }
         public List<CateringItem> Cart { get; set; } = new List<CateringItem>();
         public decimal totalBill 
@@ -23,7 +24,12 @@ namespace Capstone.Classes
 
         public decimal Withdraw(decimal amountToWithdraw)
         {
-            if (Balance >= amountToWithdraw)
+            //Making sure we can't input a negative number
+            if (amountToWithdraw < 0)
+            {
+                return this.Balance;
+            }
+            else if (Balance >= amountToWithdraw)
             {
                 this.Balance -= amountToWithdraw;
             }
@@ -51,6 +57,10 @@ namespace Capstone.Classes
             else if (amountToDeposit + this.Balance > 5000)
             {
                 //... and the account balance remains the same
+                return this.Balance;
+            }
+            else if (amountToDeposit < 0)
+            {
                 return this.Balance;
             }
             else
@@ -98,8 +108,9 @@ namespace Capstone.Classes
         /// </summary>
         /// <param name="changeDue"></param>
         /// <returns></returns>
-        public string GetChangeBack(decimal changeDue)
+        public string GetChangeBack()
         {
+            decimal changeDue = this.Balance;
             int nickels = 0;
             int dimes = 0;
             int quarters = 0;

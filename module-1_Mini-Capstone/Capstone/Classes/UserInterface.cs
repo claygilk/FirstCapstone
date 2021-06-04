@@ -13,15 +13,15 @@ namespace Capstone.Classes
     /// </remarks>
     public class UserInterface
     {
-        private Catering inventory = new Catering();
-        public Catering Inventory { get { return this.inventory; } set { inventory = value; } }
+        private Account customer = new Account();
+        public Account Customer { get { return this.customer; } set { customer = value; } }
 
         // TODO: Create public property for catering class
 
         public void RunInterface()
         {
             FileAccess file = new FileAccess();
-            this.Inventory = file.LoadInventory();
+            this.Customer.Order = file.LoadInventory();
 
 
             bool done = false;
@@ -34,10 +34,10 @@ namespace Capstone.Classes
                 switch (choice)
                 {
                     case "1":
-                        this.DisplayCateringItems(this.Inventory);
+                        this.DisplayCateringItems(this.Customer);
                         break;
                     case "2":
-                        this.OrderMenu(this.Inventory);
+                        this.OrderMenu(this.Customer);
                         break;
                     case "3":
                         done = true;
@@ -51,35 +51,39 @@ namespace Capstone.Classes
         /// This method displays each item in the current inventory and how much stock is left
         /// </summary>
         /// <param name="currentInventory">The current Catering object for this instance of the program.</param>
-        public void DisplayCateringItems(Catering currentInventory)
+        public void DisplayCateringItems(Account customer)
         {
             // Loop over each item in inventory...
-            foreach (CateringItem item in currentInventory.Items)
+            foreach (CateringItem item in customer.Order.AvailableItems)
             {
                 // ...displays the code, name, price, type and quantity in stock
                 Console.Write($"{item.Code}   ${item.Price}   Stock:{item.InStock}   {item.Type}    {item.Name}\n");
             }
+            if (customer.Order.AvailableItems.Count == 0)
+            {
+                Console.WriteLine("No items in stock, please load inventory file");
+            }
         }
 
-        public void OrderMenu(Catering catering)
+        public void OrderMenu(Account customer)
         {
             bool done = false;
             while (!done)
             {
                 Console.WriteLine("\n1. Add Money\n2. Select Products\n3. Complete Transaction\n");
-                Console.WriteLine("Current Account Balance: $" + catering.Customer.Balance);
+                Console.WriteLine("Current Account Balance: $" + customer.Balance);
 
                 string choice = Console.ReadLine();
                 switch (choice)
                 {
                     case "1":
-                        this.AddMoneyMenu(this.Inventory);
+                        this.AddMoneyMenu(customer);
                         break;
                     case "2":
-                        this.SelectProductsMenu(this.Inventory);
+                        this.SelectProductsMenu(customer);
                         break;
                     case "3":
-                        this.CompleteTransactionScreen(this.inventory);
+                        this.CompleteTransactionScreen(customer);
                         return;
                 }
             }
@@ -88,47 +92,52 @@ namespace Capstone.Classes
         /// This method displays all the items in the customers cart and their total bill, when the transaction is complete
         /// </summary>
         /// <param name="inventory">The current Catering object for this instance of the program.</param>
-        private void CompleteTransactionScreen(Catering inventory)
+        private void CompleteTransactionScreen(Account customer)
         {
             // Blank line for spacing/readbility
             Console.WriteLine("\nQuantity | Type | Name | Price | Line Total");
 
             // Loop over each item in the customer's cart...
-            foreach (CateringItem item in inventory.Customer.Cart)
+            foreach (CateringItem item in customer.Cart)
             {
                 // ... and displace the number of items in the cart, the type, name, price and total cost of these items
                 Console.WriteLine($"{item.InCart} {item.Type} {item.Name} ${item.Price} ${item.Price * item.InCart}");
             }
             // Display total bill or total cost of all items in cart
-            Console.WriteLine("Total: $" + inventory.Customer.totalBill);
+            Console.WriteLine("Total: $" + customer.totalBill);
 
             // Call the GetChangeBack() to display how much changed is due to the customer and in what denominations
-            Console.WriteLine(inventory.Customer.GetChangeBack(inventory.Customer.Balance));
+            Console.WriteLine(customer.GetChangeBack());
 
             // Resets the account balance to 0 and logs the transaction
-            inventory.Customer.CompleteTransaction();
+            customer.CompleteTransaction();
             return;
         }
         /// <summary>
         /// This menu allows the user to (attempt to) add money to the customer's account balance
         /// </summary>
         /// <param name="inventory">The current Catering object for this instance of the program.</param>
-        public void AddMoneyMenu(Catering inventory)
+        public void AddMoneyMenu(Account customer)
         {
+
             // Displays current customer balance to the user
-            Console.WriteLine("\nCurrent Balance: " + inventory.Customer.Balance);
+            Console.WriteLine("\nCurrent Balance: " + customer.Balance);
 
             // Prompts the user for how much money they want to deposit
             Console.WriteLine("Enter amount to deposit: ");
-
+            try
+            {
             // Converts input into a decimal
             decimal depositAmount = Convert.ToDecimal(Console.ReadLine());
-
             // Attempts to update customer balance by passing the deposit amount to the Account.Deposit() method
-            inventory.Customer.Balance = inventory.Customer.Deposit(depositAmount);
-
+            customer.Balance = customer.Deposit(depositAmount);
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Invalid Input");
+            }
             // Displays new balance to user. This balance will be the same as before if the deposit was unsucessful
-            Console.WriteLine("New Balance: " + inventory.Customer.Balance);
+            Console.WriteLine("New Balance: " + customer.Balance);
 
         }
 
@@ -136,7 +145,7 @@ namespace Capstone.Classes
         /// This menu allows the user to purchase items by entering a item code and the amount they wish to purchase
         /// </summary>
         /// <param name="inventory">The current Catering object for this instance of the program.</param>
-        public void SelectProductsMenu(Catering inventory)
+        public void SelectProductsMenu(Account customer)
         {
             bool done = false;
 
@@ -147,7 +156,7 @@ namespace Capstone.Classes
                 string productChoice = Console.ReadLine();
 
                 // Set the variable currentItem equal to the Catering item whose code matches the user's input (if it exists)
-                CateringItem currentItem = inventory.LookUpByCode(productChoice);
+                CateringItem currentItem = customer.Order.LookUpByCode(productChoice);
 
                 // If the item cannot be found, currentItem will be null
                 if (currentItem == null)
@@ -179,20 +188,20 @@ namespace Capstone.Classes
                 else
                 {
                     // If the user has sufficent funds in their account the sale is succesfull
-                    if (inventory.Customer.Balance > itemsToBuy * currentItem.Price)
+                    if (customer.Balance > itemsToBuy * currentItem.Price)
                     {
                         // The desired item is added to the customer's cart
-                        inventory.Customer.Cart.Add(currentItem);
+                        customer.Cart.Add(currentItem);
 
                         // The SellItem() method is called to change the amount of item in stock vs in cart
                         currentItem.SellItem(itemsToBuy);
 
                         // Money is withdrawn form the customer's balance equal to the total price of all the items sold
-                        inventory.Customer.Withdraw(itemsToBuy * currentItem.Price);
+                        customer.Withdraw(itemsToBuy * currentItem.Price);
 
                         // This sale transaction is logged in "Log.txt"
                         Logger log = new Logger();
-                        log.LogSale(currentItem, itemsToBuy, inventory.Customer.Balance);
+                        log.LogSale(currentItem, itemsToBuy, customer.Balance);
                     }
                     // If the user does not have enough money in their account, the sale is unsuccesfull...
                     else

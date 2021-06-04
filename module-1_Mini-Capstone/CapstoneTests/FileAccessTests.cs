@@ -71,9 +71,9 @@ namespace CapstoneTests
             //Act
             Catering actual = fileAccess.LoadCateringItemsIntoCatering(testArray);
             //Assert
-            Assert.AreEqual("a", actual.Items[0].ItemInfo[0]);
-            Assert.AreEqual("b", actual.Items[0].ItemInfo[1]);
-            Assert.AreEqual("c", actual.Items[0].ItemInfo[2]);
+            Assert.AreEqual("a", actual.AvailableItems[0].ItemInfo[0]);
+            Assert.AreEqual("b", actual.AvailableItems[0].ItemInfo[1]);
+            Assert.AreEqual("c", actual.AvailableItems[0].ItemInfo[2]);
         }
     }
 }

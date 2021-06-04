@@ -12,23 +12,18 @@ namespace Capstone.Classes
     /// </remarks>
     public class Catering 
     {
-        public Account Customer { get; set; }
 
-        private List<CateringItem> items = new List<CateringItem>();
+        private List<CateringItem> availableItems = new List<CateringItem>();
 
-        public Catering()
-        {
-            this.Customer = new Account();
-        }
-        public List<CateringItem> Items
+        public List<CateringItem> AvailableItems
         {
             get
             {
-                return this.items;
+                return this.availableItems;
             }
             set
             {
-                this.items = value;
+                this.availableItems = value;
             }
         }
         /// <summary>
@@ -39,7 +34,7 @@ namespace Capstone.Classes
         public CateringItem LookUpByCode(string codeToCheck)
         {
             // Loops through each item in the current inventory
-            foreach (CateringItem item in this.Items)
+            foreach (CateringItem item in this.AvailableItems)
             {
                 // If the code given matches (case insensitive) the code in that item...
                 if (item.Code.ToUpper() == codeToCheck.ToUpper())
