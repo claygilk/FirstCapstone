@@ -23,7 +23,7 @@ namespace Capstone.Classes
 
         public decimal Withdraw(decimal amountToWithdraw)
         {
-            if (Balance > amountToWithdraw)
+            if (Balance >= amountToWithdraw)
             {
                 this.Balance -= amountToWithdraw;
             }
@@ -34,35 +34,70 @@ namespace Capstone.Classes
             return this.Balance;
         }
 
+        /// <summary>
+        /// This method is used to add money to a customer's account balance
+        /// </summary>
+        /// <param name="amountToDeposit">The amount of money the user is attempting to deposit. Must be a whole dollar amount less than $5000</param>
+        /// <returns>Returns the new balance unless the deposit amount was invalid or the the new balance would be over $5000</returns>
         public decimal Deposit(decimal amountToDeposit)
         {
+            // If the user attempts to add more than $5000 at once the Deposit fails...
             if (amountToDeposit > 5000)
             {
+                //... and the account balance remains the same
                 return this.Balance;
             }
+            // If the new balance would be greater than $5000 the Deposit fails...
             else if (amountToDeposit + this.Balance > 5000)
             {
+                //... and the account balance remains the same
                 return this.Balance;
             }
             else
             {
+                // If the user attempts to deposit a whole dollar amount an the deposit does not exceed the account maximum...
                 if (amountToDeposit % 1 == 0)
                 {
+                    //... The deposit is succesfull and the balance is updated
                     this.Balance += amountToDeposit;
+
+                    // This transaction is also tracked in the Log.txt file
+                    Logger log = new Logger();
+                    log.LogDeposit(amountToDeposit, this.Balance);
                 }
+                // If the user attempts to deposit some dollars and change the deposit fails...
                 else
                 {
+                    //... and the balance remains the same
                     Console.WriteLine("Not a whole number");
                     return this.Balance;
                 }
+                // This is the return statement that is used when the deposit is succesful
                 return this.Balance;
             }
             
         }
+        /// <summary>
+        /// This method resets the customer's account balance to zero. A logs the end of the transaction.
+        /// </summary>
         public void CompleteTransaction()
         {
+            // Set the remaining balance (or change due bakc) to the current account balance
+            decimal remainingBalance = this.Balance;
 
+            // With draw all the remaining money from the customer's balance
+            this.Withdraw(remainingBalance);
+
+            // Log this transaction in "Log.txt"
+            Logger log = new Logger();
+            log.LogTransaction(remainingBalance, this.Balance);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="changeDue"></param>
+        /// <returns></returns>
         public string GetChangeBack(decimal changeDue)
         {
             int nickels = 0;
@@ -109,7 +144,7 @@ namespace Capstone.Classes
                 nickels++;
                 currentChange -= 5;
             }
-            return $"Change Due {twenties} - twenties, {tens} - tens, {fives} - fives, {ones} - ones, {quarters} - quarters, {dimes} - dimes, {nickels} - nickels";
+            return $"Change Due: {twenties} - Twenties | {tens} - Tens | {fives} - Fives | {ones} - Ones | {quarters} - Quarters | {dimes} - Dimes | {nickels} - Nickels";
         }
     }
 }
