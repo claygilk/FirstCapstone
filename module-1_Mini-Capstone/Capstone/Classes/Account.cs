@@ -57,7 +57,59 @@ namespace Capstone.Classes
                 }
                 return this.Balance;
             }
+            
+        }
+        public void CompleteTransaction()
+        {
 
+        }
+        public string GetChangeBack(decimal changeDue)
+        {
+            int nickels = 0;
+            int dimes = 0;
+            int quarters = 0;
+            int ones = 0;
+            int fives = 0;
+            int tens = 0;
+            int twenties = 0;
+
+            int currentChange = Convert.ToInt32(changeDue * 100);
+            while (currentChange > 2000)
+            {
+                twenties++;
+                currentChange -= 2000;
+            }
+            while (currentChange > 1000)
+            {
+                tens++;
+                currentChange -= 1000;
+            }
+            while (currentChange > 500)
+            {
+                fives++;
+                currentChange -= 500;
+            }
+            while (currentChange > 100)
+            {
+                ones++;
+                currentChange -= 100;
+            }
+            while (currentChange > 25)
+            {
+                quarters++;
+                currentChange -= 25;
+            }
+            while (currentChange > 10)
+            {
+                dimes++;
+                currentChange -= 10;
+            }
+            while (currentChange > 5)
+            {
+                nickels++;
+                currentChange -= 5;
+            }
+            return $"Change Due {twenties} - twenties, {tens} - tens, {fives} - fives, {ones} - ones, {quarters} - quarters, {dimes} - dimes, {nickels} - nickels";
         }
     }
 }

@@ -73,7 +73,7 @@ namespace Capstone.Classes
                         break;
                     case "3":
                         this.CompleteTransactionScreen(this.inventory);
-                        break;
+                        return;
                 }
             }
         }
@@ -84,7 +84,9 @@ namespace Capstone.Classes
             {
                 Console.WriteLine($"{item.InCart} {item.Type} {item.Name} ${item.Price} ${item.Price * item.InCart}");
             }
-            Console.WriteLine("Total: " + inventory.Customer.totalBill);
+            Console.WriteLine("Total: $" + inventory.Customer.totalBill);
+            Console.WriteLine(inventory.Customer.GetChangeBack(inventory.Customer.Balance));
+            return;
         }
 
         public void AddMoneyMenu(Catering inventory)
@@ -126,8 +128,16 @@ namespace Capstone.Classes
                 }
                 else
                 {
+                    if (inventory.Customer.Balance > itemsToBuy * currentItem.Price)
+                    {
                     inventory.Customer.Cart.Add(currentItem);
                     currentItem.SellItem(itemsToBuy);
+                    inventory.Customer.Withdraw(itemsToBuy * currentItem.Price);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Insufficient Funds");
+                    }
                     break;
                 }
             }
