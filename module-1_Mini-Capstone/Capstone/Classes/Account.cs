@@ -120,37 +120,37 @@ namespace Capstone.Classes
             int twenties = 0;
 
             int currentChange = Convert.ToInt32(changeDue * 100);
-            while (currentChange > 2000)
+            while (currentChange >= 2000)
             {
                 twenties++;
                 currentChange -= 2000;
             }
-            while (currentChange > 1000)
+            while (currentChange >= 1000)
             {
                 tens++;
                 currentChange -= 1000;
             }
-            while (currentChange > 500)
+            while (currentChange >= 500)
             {
                 fives++;
                 currentChange -= 500;
             }
-            while (currentChange > 100)
+            while (currentChange >= 100)
             {
                 ones++;
                 currentChange -= 100;
             }
-            while (currentChange > 25)
+            while (currentChange >= 25)
             {
                 quarters++;
                 currentChange -= 25;
             }
-            while (currentChange > 10)
+            while (currentChange >= 10)
             {
                 dimes++;
                 currentChange -= 10;
             }
-            while (currentChange > 5)
+            while (currentChange >= 5)
             {
                 nickels++;
                 currentChange -= 5;

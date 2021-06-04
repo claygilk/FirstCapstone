@@ -43,13 +43,26 @@ namespace CapstoneTests
             //Assert.AreEqual(0, result);
         }
         [TestMethod]
-        public void GetChangeBack_()
+        public void GetChangeBack_50CentsReturnsTwoQuarters()
         {
             //Arrange
             Account account = new Account();
             account.Deposit(1M);
             account.Withdraw(0.50M);
             string expected = $"Change Due: 0 - Twenties | 0 - Tens | 0 - Fives | 0 - Ones | 2 - Quarters | 0 - Dimes | 0 - Nickels";
+            //Act
+            string result = account.GetChangeBack();
+            //Assert
+            Assert.AreEqual(expected, result);
+        }
+        [TestMethod]
+        public void GetChangeBack_24Dollar25CentsReturnsCorrectChange()
+        {
+            //Arrange
+            Account account = new Account();
+            account.Deposit(50M);
+            account.Withdraw(25.75M);
+            string expected = $"Change Due: 1 - Twenties | 0 - Tens | 0 - Fives | 4 - Ones | 1 - Quarters | 0 - Dimes | 0 - Nickels";
             //Act
             string result = account.GetChangeBack();
             //Assert
