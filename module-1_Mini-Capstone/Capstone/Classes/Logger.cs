@@ -51,14 +51,14 @@ namespace Capstone.Classes
         /// <param name="newBalance"></param>
         public string LogSale(CateringItem itemSold, int quantitySold, decimal newBalance)
         {
-            string record = $"{DateTime.Now} {quantitySold} {itemSold.Name} {itemSold.Code} ${itemSold.Price} ${newBalance}";
+            string record = $"{DateTime.Now} {quantitySold} {itemSold.Name} {itemSold.Code} ${itemSold.Price * quantitySold} ${newBalance}";
             // try-catch block is used to hand file exceptions
             try
             {
                 // Use a stream writer to append the record to C:\Catering\Log.txt 
                 using (StreamWriter write = new StreamWriter(@"C:\Catering\Log.txt", true))
                 {
-                    // Writes: Date, Time, quantity sold, item name, item code, item price and new balance
+                    // Writes: Date, Time, quantity sold, item name, item code, line item total and new balance
                     write.WriteLine(record);
                 }
             }

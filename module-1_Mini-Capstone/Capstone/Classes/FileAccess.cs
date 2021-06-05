@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace Capstone.Classes
 {
@@ -29,7 +31,7 @@ namespace Capstone.Classes
         /// This method reads the file at the path specified in the filePath field, and splits each line on pipes.
         /// </summary>
         /// <returns>Returns a list of string array. Each item in the list is one catering item. Each item in the array is the info about that catering item.</returns>
-        public List<string[]> ReadFileToList()
+        public List<string[]> ReadFileToList(string fileToRead)
         {
             // Instantites list of string arrays to be added to later
             List<string[]> itemList = new List<string[]>();
@@ -38,7 +40,7 @@ namespace Capstone.Classes
             try
             {
                 // Open and reads the file specified in the filePath field
-                using (StreamReader read = new StreamReader(this.filePath))
+                using (StreamReader read = new StreamReader(fileToRead))
                 {
                     // Reads every line from start to finish
                     while (!read.EndOfStream)
@@ -52,15 +54,15 @@ namespace Capstone.Classes
 
                 }
             }
-            catch (DirectoryNotFoundException e)
+            catch (DirectoryNotFoundException)
             {
                 Console.WriteLine(@"Could not find the directory: C:\Catering\");
             }
-            catch (FileNotFoundException e)
+            catch (FileNotFoundException)
             {
                 Console.WriteLine(@"Could not find the file: C:\Catering\cateringsystem.csv");
             }
-            catch (UnauthorizedAccessException e)
+            catch (UnauthorizedAccessException)
             {
                 Console.WriteLine(@"Do not have permission to access: C:\Catering\cateringsystem.csv" + "\nPlease update file permissions");
             }
@@ -125,13 +127,88 @@ namespace Capstone.Classes
         public Catering LoadInventory()
         {
             // Reads the file and converts each item to a string array, puts those arrays into a list.
-            List<string[]> itemList = this.ReadFileToList();
+            List<string[]> itemList = this.ReadFileToList(this.FilePath);
 
             // Takes that list and converts each item into a Catering item. Returns an array containing all those CateringItems.
             CateringItem[] cateringItemArray = this.CreateCateringItemsFromList(itemList);
 
             // Returns a Catering object that contains all the CateringItems from the Array
             return this.LoadCateringItemsIntoCatering(cateringItemArray);
+        }
+
+        /// <summary>
+        /// This method reads the current Log.txt files and generates from it a Sales Report. The report is written to the file: TotalSales.rpt
+        /// </summary>
+        public List<SalesRecord> CreateSalesRecordObjects()
+        {
+            // Read the long file using the ReadFileToList() method from the main program
+            // but because the Log.txt is not pipe delimitied all arrays are of lenth 1
+            List<string[]> rawLogFile = this.ReadFileToList(@"C:\Catering\Log.txt");
+
+            // Create a list of strings that will hold only the lines in the log file that were for sales
+            List<string> allSaleRecords = new List<string>();
+
+            // loop over each line that was read in from the file
+            foreach (string[] line in rawLogFile)
+            {
+                // if the line was for a deposit or finished transaction then the line is ignored
+                if (!line[0].Contains("ADD") && !line[0].Contains("GIVE"))
+                {
+                    // otherwise create a new string that is just the line with the date/time info cut off
+                    string lineWithoutDate = line[0].Substring(line[0].IndexOf("M") + 2);
+
+                    // add this new string to the list of strings created above
+                    allSaleRecords.Add(lineWithoutDate);
+                }
+            }
+
+            // Create a list for SalesRecord that will be filled out by the list of strings from the previous step
+            List<SalesRecord> listOfSales = new List<SalesRecord>();
+
+            // loop over each string in the list and...
+            for (int i = 0; i < allSaleRecords.Count; i++)
+            {
+                // ...creat a new SalesRecord object for that line
+                listOfSales.Add(new SalesRecord());
+
+                // Assign the value of the current string to the "SaleInfo" property of the new SalesRecord
+                // The other SalesRecord properties will all be derived from this string
+                listOfSales[i].SaleInfo = allSaleRecords[i];
+            }
+
+            // Return the list of SalesRecord objects
+            return listOfSales;
+        }
+
+        public void WriteSalesReport(List<SalesRecord> listOfSales)
+        {
+            var uniqueSales = listOfSales.GroupBy(s => s.Name).Select(s => new
+            {
+                Name = s.Key,
+                amountSold = s.Sum(sa => sa.amountSold),
+                perItemRevenue = s.Sum(sa => sa.perItemRevenue),
+            }).ToList();
+
+
+            try
+            {
+                using (StreamWriter write = new StreamWriter(@"C:\Catering\TotalSales.rpt"))
+                {
+                    decimal total = 0;
+                    foreach (var sale in uniqueSales)
+                    {
+                        write.WriteLine($"{sale.Name}|{sale.amountSold}|{sale.perItemRevenue}");
+                        total += sale.perItemRevenue;
+                    }
+                    write.WriteLine($"\n**Total Sales** {total}");
+
+                }
+            }
+            catch (IOException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
         }
     }
 }

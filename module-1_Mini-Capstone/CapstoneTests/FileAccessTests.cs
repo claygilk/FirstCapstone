@@ -31,7 +31,7 @@ namespace CapstoneTests
             int expectedItemCount = System.IO.File.ReadAllLines(fileAccess.FilePath).Length;
 
             // Act
-            List<string[]> actualItem = fileAccess.ReadFileToList();
+            List<string[]> actualItem = fileAccess.ReadFileToList(fileAccess.FilePath);
 
             // Assert
             Assert.AreEqual(expectedItemCount, actualItem.Count);

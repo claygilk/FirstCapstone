@@ -59,6 +59,8 @@ namespace Capstone.Classes
                     // Quits the program
                     case "3":
                         done = true;
+
+                        file.WriteSalesReport(file.CreateSalesRecordObjects());
                         break;
                 }
 
