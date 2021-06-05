@@ -30,7 +30,7 @@ namespace Capstone.Classes
         /// <summary>
         /// This boolean property is true if the cateringsystem.csv file was formatted corrently
         /// </summary>
-        public bool InputFileIsInvalid { get; set; }
+        public bool InputFileIsInvalid { get; private set; }
 
         /// <summary>
         /// This method reads the file at the path specified in the filePath field, and splits each line on pipes.
@@ -80,7 +80,7 @@ namespace Capstone.Classes
             if (fileToRead == @"C:\Catering\cateringsystem.csv")
             {
                 // If the file was fromatted incorrectly a message will be displayed to the user and the program will quit out
-                CheckInputFileFormat(itemList);
+                this.InputFileIsInvalid = CheckInputFileFormat(itemList);
             }
 
             // Once all lines have been read, and all string arrays have been added, returns the list of items
@@ -91,39 +91,43 @@ namespace Capstone.Classes
         /// This method checks to makse sure the input file is formatted correctly.
         /// </summary>
         /// <param name="itemList"></param>
-        private void CheckInputFileFormat(List<string[]> itemList)
+        public bool CheckInputFileFormat(List<string[]> itemList)
         {
-            // Custom exceptions to ensure the cateringsystem.csv file is formatted correctly
+            int lineNumber = 0;
+            // Custom "exceptions" to ensure the cateringsystem.csv file is formatted correctly
+            // Note: actual exceptions were not used because creating 4 Exceptions classes that simply just printed out an error message seemed overkill
             foreach (string[] item in itemList)
             {
-                // if any line does not contain three pipes to delimit the 4 different values, throw exception
+                lineNumber++;
+                // if any line does not contain three pipes to delimit the 4 different values, stop the program and inform the user
                 if (item.Length != 4)
                 {
-                    this.InputFileIsInvalid = true;
-                    Console.WriteLine("cateringsystem.csv does not appear to be pipe delimited correctly.\nPlease update the file before continuing.");
+                    Console.WriteLine($"cateringsystem.csv does not appear to be pipe delimited correctly.\nPlease update Line {lineNumber} before continuing.");
+                    return true;
                 }
-                // if the first value, which should be the item code, is not two characters long, throw exception
+                // if the first value, which should be the item code, is not two characters long, stop the program and inform the user
                 if (item[0].Length != 2)
                 {
-                    this.InputFileIsInvalid = true;
-                    Console.WriteLine("cateringsystem.csv item codes are not formated correctly.\nPlease update the file before continuing.");
+                    Console.WriteLine($"cateringsystem.csv item codes are not formated correctly.\nPlease update Line {lineNumber} before continuing.");
+                    return true;
                 }
+                // if the item code is not A,B,E or D stop the program and inform the user
                 if (item[3] != "A" && item[3] != "B" && item[3] != "E" && item[3] != "D")
                 {
-                    this.InputFileIsInvalid = true;
-                    Console.WriteLine("cateringsystem.csv item types are not formated correctly.\nPlease update the file before continuing.");
+                    Console.WriteLine($"cateringsystem.csv item types are not formated correctly.\nPlease update Line {lineNumber} before continuing.");
+                    return true;
                 }
+                // if the item price is not formatted correctly stop the program and inform the user
+                // the program is also stopped if the price has any digit in the 10,000s place because the user can only spend $5000 dollars per order
                 Regex price = new Regex(@"^\d?\,?\d?\d?\d\.\d\d$");
                 if (!price.IsMatch(item[2], 0))
                 {
-                    this.InputFileIsInvalid = true;
-                    Console.WriteLine("cateringsystem.csv item prices are not formated correctly.\nPlease update the file before continuing.");
+                    Console.WriteLine($"cateringsystem.csv item prices are not formated correctly.\nPlease update Line {lineNumber} before continuing.");
+                    return true;
                 }
-
             }
+                return false;
         }
-
-
 
         /// <summary>
         /// This method creates a CateringItem object for each entry in the list of string arrays that is passed to it.
@@ -189,11 +193,11 @@ namespace Capstone.Classes
         /// <summary>
         /// This method reads the current Log.txt files and generates from it a Sales Report. The report is written to the file: TotalSales.rpt
         /// </summary>
-        public List<SalesRecord> CreateSalesRecordObjects()
+        public List<SalesRecord> CreateSalesRecordObjects(string logFileToRead)
         {
             // Read the long file using the ReadFileToList() method from the main program
             // but because the Log.txt is not pipe delimitied all arrays are of lenth 1
-            List<string[]> rawLogFile = this.ReadFileToList(@"C:\Catering\Log.txt");
+            List<string[]> rawLogFile = this.ReadFileToList(logFileToRead);
 
             // Create a list of strings that will hold only the lines in the log file that were for sales
             List<string> allSaleRecords = new List<string>();

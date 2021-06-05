@@ -57,19 +57,20 @@ namespace Capstone.Classes
                 }
                 else
                 {
-                    return ItemInfo[3];
+                    return "Invalid Code: " + ItemInfo[3];
                 }
             }
         }
+
         /// <summary>
         /// The number of items that are available for purchase
         /// </summary>
-        public int InStock { get; set; }
+        public int InStock { get; private set; }
 
         /// <summary>
         /// the number of items that the customer has purchased. These items are in the 'shopping cart'
         /// </summary>
-        public int InCart { get; set; }
+        public int InCart { get; private set; }
 
         /// <summary>
         /// When a CateringItem is made it is 'stocked' and the quantity is set to 50

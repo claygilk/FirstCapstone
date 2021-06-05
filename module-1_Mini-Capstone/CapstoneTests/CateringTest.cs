@@ -7,6 +7,26 @@ namespace CapstoneTests
     public class CateringTest
     {
         [TestMethod]
+        public void ToStringOverride_ReturnsCorrectString()
+        {
+            // Arrange
+            Catering order = new Catering();
+            CateringItem item = new CateringItem();
+
+            string[] testInfo = { "B1", "Soda", "1.50", "B" };
+            item.ItemInfo = testInfo;
+            order.AvailableItems.Add(item);
+
+            string expected = "B1 |";
+
+            // Act
+            string actual = order.ToString();
+
+            // Assert
+            Assert.AreEqual(expected, actual);
+
+        }
+        [TestMethod]
         public void CateringInstanceShouldBeCreated()
         {
             // Arrange 
@@ -17,7 +37,7 @@ namespace CapstoneTests
             Assert.IsNotNull(catering);
         }
         [TestMethod]
-        public void LookUpByCode_()
+        public void LookUpByCode_B1_ReturnsSodaItem()
         {
             // Arrange 
             string testItem = "B1";
@@ -29,7 +49,7 @@ namespace CapstoneTests
             Assert.AreEqual("Soda", result.Name);
         }
         [TestMethod]
-        public void LookUpByCode_CodeNotFound()
+        public void LookUpByCode_CodeNotFound_ReturnsNull()
         {
             // Arrange 
             string testItem = "A5";
@@ -41,7 +61,7 @@ namespace CapstoneTests
             Assert.AreEqual(null, result);
         }
         [TestMethod]
-        public void LookUpByCode_EmptyStringReturnsNull()
+        public void LookUpByCode_EmptyString_ReturnsNull()
         {
             // Arrange 
             string testItem = "";

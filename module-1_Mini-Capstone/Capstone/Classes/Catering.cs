@@ -26,10 +26,7 @@ namespace Capstone.Classes
             {
                 return this.availableItems;
             }
-            set
-            {
-                this.availableItems = value;
-            }
+
         }
 
         /// <summary>

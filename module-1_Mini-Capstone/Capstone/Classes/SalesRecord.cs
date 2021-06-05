@@ -23,6 +23,7 @@ namespace Capstone.Classes
         {
             get
             {
+                // The Name is derived by concatenating the 2nd element thru the fourth from last element of the SaleInfo Array
                 string[] saleInfoArray = this.SaleInfo.Split(" ");
                 string name = "";
 
@@ -41,6 +42,7 @@ namespace Capstone.Classes
         {
             get
             {
+                // amount sold is derived by returning the first returning the first element in the sale info array
                 string[] saleInfoArray = this.SaleInfo.Split(" ");
                 return Convert.ToInt32(saleInfoArray[0]);
             }
@@ -53,8 +55,9 @@ namespace Capstone.Classes
         {
             get
             {
+                // per item revenue is derived by returning the second element that starts with a dollar sign in SaleInfo 
                 string[] saleInfoArray = this.SaleInfo.Split("$");
-
+                
                 return Convert.ToDecimal(saleInfoArray[1]);
             }
         }

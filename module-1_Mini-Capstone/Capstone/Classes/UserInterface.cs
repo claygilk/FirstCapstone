@@ -70,7 +70,7 @@ namespace Capstone.Classes
                         done = true;
 
                         // writes sales report to file just before the program quits
-                        log.WriteSalesReport(file.CreateSalesRecordObjects());
+                        log.WriteSalesReport(file.CreateSalesRecordObjects(@"C:\Catering\Log.txt"));
                         break;
                 }
 
@@ -86,8 +86,15 @@ namespace Capstone.Classes
             // Loop over each item in inventory...
             foreach (CateringItem item in customer.Order.AvailableItems)
             {
+                if (item.InStock == 0)
+                {
+                Console.Write($"{item.Code}   ${item.Price}   OUT OF STOCK   {item.Type}    {item.Name}\n");
+                }
+                else
+                {
                 // ...displays the code, name, price, type and quantity in stock
-                Console.Write($"{item.Code}   ${item.Price}   Stock:{item.InStock}   {item.Type}    {item.Name}\n");
+                Console.Write($"{item.Code}   ${item.Price}   Stock : {item.InStock}   {item.Type}    {item.Name}\n");
+                }
             }
             if (customer.Order.AvailableItems.Count == 0)
             {
@@ -167,20 +174,21 @@ namespace Capstone.Classes
             Console.WriteLine("\nCurrent Balance: " + customer.Balance);
 
             // Prompts the user for how much money they want to deposit
-            Console.WriteLine("Enter amount to deposit: ");
+            Console.WriteLine("\nEnter amount to deposit: ");
             try
             {
                 // Converts input into a decimal
                 decimal depositAmount = Convert.ToDecimal(Console.ReadLine());
+
                 // Attempts to update customer balance by passing the deposit amount to the Account.Deposit() method
-                customer.Balance = customer.Deposit(depositAmount);
+                customer.Deposit(depositAmount);
             }
             catch (FormatException)
             {
-                Console.WriteLine("Invalid Input");
+                Console.WriteLine("\nInvalid Input");
             }
             // Displays new balance to user. This balance will be the same as before if the deposit was unsucessful
-            Console.WriteLine("New Balance: " + customer.Balance);
+            Console.WriteLine("\nNew Balance: $" + customer.Balance);
 
         }
 
@@ -208,56 +216,44 @@ namespace Capstone.Classes
                 if (currentItem == null)
                 {
                     // And the user will be notified
-                    Console.WriteLine("Item not found");
+                    Console.WriteLine("\n**Item not found**");
                     break;
                 }
                 // If the item is out of stock...
                 if (currentItem.InStock == 0)
                 {
                     // ...the user will be notified
-                    Console.WriteLine("Out of Stock");
+                    Console.WriteLine("\n**Out of Stock**");
                 }
 
                 // Writes out the information about the user's current choice, so they can check the price and stock levels
-                Console.Write(currentItem.ToString());
+                Console.Write("\n" + currentItem.ToString());
 
                 // If the item is exists and is in stock, ask the user how many items they wish to purchase
                 Console.WriteLine("How many items do you want to buy? ");
 
                 // Convert user input to an integer
-                int itemsToBuy = Convert.ToInt32(Console.ReadLine());
+                int itemsToBuy; 
+                Int32.TryParse(Console.ReadLine(), out itemsToBuy);
 
                 // If the user tries to buy more items then are in stock the sale is unsucessful...
                 if (itemsToBuy > currentItem.InStock)
                 {
                     // ...and the user is notified
-                    Console.WriteLine("Insufficient Stock");
+                    Console.WriteLine("\n**Insufficient Stock**");
                     break;
                 }
                 else
                 {
-                    // If the user has sufficent funds in their account the sale is succesfull
-                    if (customer.Balance > itemsToBuy * currentItem.Price)
-                    {
-                        // The desired item is added to the customer's cart
-                        customer.Cart.Add(currentItem);
-
-                        // The SellItem() method is called to change the amount of item in stock vs in cart
-                        currentItem.SellItem(itemsToBuy);
-
-                        // Money is withdrawn form the customer's balance equal to the total price of all the items sold
-                        customer.Withdraw(itemsToBuy * currentItem.Price);
-
-                        // This sale transaction is logged in "Log.txt"
-                        Logger log = new Logger();
-                        log.LogSale(currentItem, itemsToBuy, customer.Balance);
-                    }
                     // If the user does not have enough money in their account, the sale is unsuccesfull...
-                    else
+                    if (!customer.AttemptToBuy(currentItem, itemsToBuy))
                     {
                         // ...and the user is notified
-                        Console.WriteLine("Insufficient Funds");
+                        Console.WriteLine("\n**Insufficient Funds**");
                     }
+                    
+                    // If the user has sufficent funds in their account the sale is succesfull.
+                    // and the user is returned to the order menu
                     break;
                 }
             }

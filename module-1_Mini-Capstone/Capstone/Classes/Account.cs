@@ -17,12 +17,12 @@ namespace Capstone.Classes
         /// <summary>
         /// The customer's current account balance.
         /// </summary>
-        public decimal Balance { get; set; }
+        public decimal Balance { get; private set; }
 
         /// <summary>
         /// The customer's current 'shopping cart' (aka the list of items they have already purchased).
         /// </summary>
-        public List<CateringItem> Cart { get; set; } = new List<CateringItem>();
+        public List<CateringItem> Cart { get; } = new List<CateringItem>();
 
         /// <summary>
         /// Derived Propety. The total cost of all the items in the customer's shopping cart. 
@@ -194,6 +194,32 @@ namespace Capstone.Classes
                 currentChange -= 5;
             }
             return $"Change Due: {twenties} - Twenties | {tens} - Tens | {fives} - Fives | {ones} - Ones | {quarters} - Quarters | {dimes} - Dimes | {nickels} - Nickels";
+        }
+
+        public bool AttemptToBuy(CateringItem currentItem, int itemsToBuy)
+        {
+            // If the user has sufficent funds in their account the sale is succesfull
+            if (this.Balance > itemsToBuy * currentItem.Price)
+            {
+                // The desired item is added to the customer's cart
+                this.Cart.Add(currentItem);
+
+                // The SellItem() method is called to change the amount of item in stock vs in cart
+                currentItem.SellItem(itemsToBuy);
+
+                // Money is withdrawn form the customer's balance equal to the total price of all the items sold
+                this.Withdraw(itemsToBuy * currentItem.Price);
+
+                // This sale transaction is logged in "Log.txt"
+                Logger log = new Logger();
+                log.LogSale(currentItem, itemsToBuy, this.Balance);
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }
