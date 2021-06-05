@@ -28,6 +28,11 @@ namespace Capstone.Classes
         }
 
         /// <summary>
+        /// This boolean property is true if the cateringsystem.csv file was formatted corrently
+        /// </summary>
+        public bool InputFileIsInvalid { get; set; }
+
+        /// <summary>
         /// This method reads the file at the path specified in the filePath field, and splits each line on pipes.
         /// </summary>
         /// <returns>Returns a list of string array. Each item in the list is one catering item. Each item in the array is the info about that catering item.</returns>
@@ -71,9 +76,54 @@ namespace Capstone.Classes
                 Console.WriteLine(@"Encountered an error: " + e.Message);
             }
 
+            // If this method is reading in the input file, it checks to make sure that the file was formatted correctly
+            if (fileToRead == @"C:\Catering\cateringsystem.csv")
+            {
+                // If the file was fromatted incorrectly a message will be displayed to the user and the program will quit out
+                CheckInputFileFormat(itemList);
+            }
+
             // Once all lines have been read, and all string arrays have been added, returns the list of items
             return itemList;
         }
+
+        /// <summary>
+        /// This method checks to makse sure the input file is formatted correctly.
+        /// </summary>
+        /// <param name="itemList"></param>
+        private void CheckInputFileFormat(List<string[]> itemList)
+        {
+            // Custom exceptions to ensure the cateringsystem.csv file is formatted correctly
+            foreach (string[] item in itemList)
+            {
+                // if any line does not contain three pipes to delimit the 4 different values, throw exception
+                if (item.Length != 4)
+                {
+                    this.InputFileIsInvalid = true;
+                    Console.WriteLine("cateringsystem.csv does not appear to be pipe delimited correctly.\nPlease update the file before continuing.");
+                }
+                // if the first value, which should be the item code, is not two characters long, throw exception
+                if (item[0].Length != 2)
+                {
+                    this.InputFileIsInvalid = true;
+                    Console.WriteLine("cateringsystem.csv item codes are not formated correctly.\nPlease update the file before continuing.");
+                }
+                if (item[3] != "A" && item[3] != "B" && item[3] != "E" && item[3] != "D")
+                {
+                    this.InputFileIsInvalid = true;
+                    Console.WriteLine("cateringsystem.csv item types are not formated correctly.\nPlease update the file before continuing.");
+                }
+                Regex price = new Regex(@"^\d?\,?\d?\d?\d\.\d\d$");
+                if (!price.IsMatch(item[2], 0))
+                {
+                    this.InputFileIsInvalid = true;
+                    Console.WriteLine("cateringsystem.csv item prices are not formated correctly.\nPlease update the file before continuing.");
+                }
+
+            }
+        }
+
+
 
         /// <summary>
         /// This method creates a CateringItem object for each entry in the list of string arrays that is passed to it.
@@ -180,35 +230,6 @@ namespace Capstone.Classes
             return listOfSales;
         }
 
-        public void WriteSalesReport(List<SalesRecord> listOfSales)
-        {
-            var uniqueSales = listOfSales.GroupBy(s => s.Name).Select(s => new
-            {
-                Name = s.Key,
-                amountSold = s.Sum(sa => sa.amountSold),
-                perItemRevenue = s.Sum(sa => sa.perItemRevenue),
-            }).ToList();
 
-
-            try
-            {
-                using (StreamWriter write = new StreamWriter(@"C:\Catering\TotalSales.rpt"))
-                {
-                    decimal total = 0;
-                    foreach (var sale in uniqueSales)
-                    {
-                        write.WriteLine($"{sale.Name}|{sale.amountSold}|{sale.perItemRevenue}");
-                        total += sale.perItemRevenue;
-                    }
-                    write.WriteLine($"\n**Total Sales** {total}");
-
-                }
-            }
-            catch (IOException e)
-            {
-                Console.WriteLine(e.Message);
-            }
-
-        }
     }
 }

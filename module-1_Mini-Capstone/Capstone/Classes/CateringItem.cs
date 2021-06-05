@@ -105,5 +105,10 @@ namespace Capstone.Classes
             }
         }
 
+        public override string ToString()
+        {
+            return $"{this.Code}   ${this.Price}   Stock:{this.InStock}   {this.Type}    {this.Name}\n";
+        }
+
     }
 }

@@ -31,11 +31,20 @@ namespace Capstone.Classes
             // Create a new instance of file access
             FileAccess file = new FileAccess();
 
+            // Create a new instance of the Logger class
+            Logger log = new Logger();
+
             // Call the LoadInventory method to initialize the Catering object with values based on the input file
             this.Customer.Order = file.LoadInventory();
 
             // This interface is run until the user decides to quit
             bool done = false;
+
+            // If the LoadInventory() method was unsuccessful file.InputFileIsValid will now be false, and the program should not continue
+            if (file.InputFileIsInvalid)
+            {
+                done = true;
+            }
 
             while (!done)
             {
@@ -60,7 +69,8 @@ namespace Capstone.Classes
                     case "3":
                         done = true;
 
-                        file.WriteSalesReport(file.CreateSalesRecordObjects());
+                        // writes sales report to file just before the program quits
+                        log.WriteSalesReport(file.CreateSalesRecordObjects());
                         break;
                 }
 
@@ -184,6 +194,9 @@ namespace Capstone.Classes
 
             while (!done)
             {
+                // Write out the code for each available item
+                Console.WriteLine("\nAvailable Items: " + customer.Order.ToString() + "\n");
+
                 // Asks the user to enter the product code
                 Console.WriteLine("Enter product code: ");
                 string productChoice = Console.ReadLine();
@@ -204,6 +217,9 @@ namespace Capstone.Classes
                     // ...the user will be notified
                     Console.WriteLine("Out of Stock");
                 }
+
+                // Writes out the information about the user's current choice, so they can check the price and stock levels
+                Console.Write(currentItem.ToString());
 
                 // If the item is exists and is in stock, ask the user how many items they wish to purchase
                 Console.WriteLine("How many items do you want to buy? ");

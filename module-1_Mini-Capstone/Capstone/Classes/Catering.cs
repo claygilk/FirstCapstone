@@ -52,6 +52,25 @@ namespace Capstone.Classes
             // If th item is not found, the method returns "null"
             return null;
         }
-   
+
+        /// <summary>
+        /// This method is used to convenently get a string of all the availble item codes to display to the user
+        /// </summary>
+        /// <returns>returns a string that includes the item code for any item in stock</returns>
+        public override string ToString()
+        {
+            string avaibleItemCodes = "";
+
+            foreach(CateringItem item in this.AvailableItems)
+            {
+                if (item.InStock > 0)
+                {
+                avaibleItemCodes += item.Code + " | ";
+                }
+            }
+
+            return avaibleItemCodes.TrimEnd();
+        }
+
     }
 }
